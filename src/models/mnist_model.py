@@ -4,7 +4,7 @@ import torch
 from pytorch_lightning import LightningModule
 from torchmetrics.classification.accuracy import Accuracy
 
-from src.models.modules.simple_dense_net import SimpleDenseNet
+from lib.modules.simple_dense_net import SimpleDenseNet
 
 
 class MNISTLitModel(LightningModule):
@@ -22,24 +22,14 @@ class MNISTLitModel(LightningModule):
         https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html
     """
 
-    def __init__(
-        self,
-        input_size: int = 784,
-        lin1_size: int = 256,
-        lin2_size: int = 256,
-        lin3_size: int = 256,
-        output_size: int = 10,
-        lr: float = 0.001,
-        weight_decay: float = 0.0005,
-        **kwargs
-    ):
+    def __init__(self, dense_net, **kwargs):
         super().__init__()
 
         # this line ensures params passed to LightningModule will be saved to ckpt
         # it also allows to access params with 'self.hparams' attribute
         self.save_hyperparameters()
 
-        self.model = SimpleDenseNet(hparams=self.hparams)
+        self.model = SimpleDenseNet(hparams=self.hparams.dense_net)
 
         # loss function
         self.criterion = torch.nn.CrossEntropyLoss()

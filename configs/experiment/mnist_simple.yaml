@@ -1,29 +1,31 @@
 # @package _global_
 
-# to execute this experiment run:
-# python run.py experiment=example_simple.yaml
-
 defaults:
-  - override /trainer: minimal.yaml # choose trainer from 'configs/trainer/'
-  - override /model: mnist_model.yaml
-  - override /datamodule: mnist_datamodule.yaml
+  - override /path: default.yaml
+  - override /trainer: default.yaml
   - override /callbacks: default.yaml
-  - override /logger: null
+  - override /logger: tensorboard.yaml
+  - override /datamodule: mnist.yaml
+  - override /model: mnist.yaml
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
 
 seed: 12345
 
+path:
+  log_dir: exp_logs/mnist_simple
+  data_dir: ${path.work_dir}/data
+
 trainer:
-  min_epochs: 1
-  max_epochs: 10
+  max_epochs: 100
   gradient_clip_val: 0.5
 
 model:
-  lin1_size: 128
-  lin2_size: 256
-  lin3_size: 64
+  dense_net:
+    lin1_size: 128
+    lin2_size: 256
+    lin3_size: 64
   lr: 0.002
 
 datamodule:

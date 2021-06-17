@@ -1,0 +1,11 @@
+# path to original working directory
+# hydra hijacks working directory by changing it to the current log directory,
+# so it's useful to have this path as a special variable
+# learn more here: https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
+work_dir: ${hydra:runtime.cwd}
+
+# path to folder with data
+data_dir: ${path.work_dir}/data/
+
+# the path to store experiment logs
+log_dir: ${path.work_dir}/exp_logs/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}

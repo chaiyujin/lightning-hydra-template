@@ -1,11 +1,11 @@
 import logging
+import os
 import warnings
 from typing import List, Sequence
 
 import pytorch_lightning as pl
 import rich.syntax
 import rich.tree
-import wandb
 from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning.loggers.wandb import WandbLogger
 from pytorch_lightning.utilities import rank_zero_only
@@ -81,11 +81,12 @@ def extras(config: DictConfig) -> None:
 def print_config(
     config: DictConfig,
     fields: Sequence[str] = (
-        "trainer",
-        "model",
-        "datamodule",
         "callbacks",
         "logger",
+        "trainer",
+        "datamodule",
+        "model",
+        "path",
         "seed",
     ),
     resolve: bool = True,
@@ -113,6 +114,8 @@ def print_config(
         branch.add(rich.syntax.Syntax(branch_content, "yaml"))
 
     rich.print(tree)
+    with open(os.path.join(os.getcwd(), "config_info.txt"), "w") as fp:
+        rich.print(tree, file=fp)
 
 
 def empty(*args, **kwargs):
@@ -174,4 +177,6 @@ def finish(
     # without this sweeps with wandb logger might crash!
     for lg in logger:
         if isinstance(lg, WandbLogger):
+            import wandb
+
             wandb.finish()
